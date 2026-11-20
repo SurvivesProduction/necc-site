@@ -19,6 +19,11 @@
   var source = /^[a-z0-9_-]{1,40}$/i.test(srcParam) ? srcParam : 'postcard-2026-10';
   document.getElementById('src').value = source;
 
+  // Card code: the postcard's QR opens /estimate/?c=<code>&src=card. Only the code (random, 8 characters) travels; nothing about
+  // the home is on this page or in the request. Anything that doesn't look like a code is dropped, never echoed into the page.
+  var cParam = new URLSearchParams(location.search).get('c') || '';
+  var cardCode = /^[A-Za-z0-9-]{4,16}$/.test(cParam) ? cParam.toUpperCase() : '';
+
   // ---- Web-app URL -------------------------------------------------------
   function endpoint() {
     // TEST HOOK (filming/QA only): /estimate/?backend=dead swaps in a deliberately invalid URL so the
@@ -157,6 +162,7 @@
       'Best time for a call: ' + p.best_time,
       'Notes: ' + (p.notes || '(none)'),
       'Source: ' + p.source,
+      'Card code: ' + (p.card_code || '(none)'),
       '',
       'Callback permission, exact wording shown on the form:',
       '"' + p.consent_text + '"',
@@ -202,6 +208,7 @@
       notes: f.notes.value.trim(),
       best_time: form.querySelector('input[name="best_time"]:checked').value,
       source: f.source.value,
+      card_code: cardCode,
       consent: f.consent.checked,
       // Exact wording shown on the page, read from the DOM so the record can't drift from what they saw.
       consent_text: document.getElementById('consent-text').textContent.trim(),
