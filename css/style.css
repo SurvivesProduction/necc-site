@@ -188,3 +188,4 @@ noscript .form-error { display: block; }
 .answers { margin: 0; font-size: 1rem; }
 .answers dt { font-weight: 700; margin-top: 0.6rem; }
 .answers dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.reg-note { margin: .75rem 0 0; font-size: .9rem; color: var(--muted, #555); }
