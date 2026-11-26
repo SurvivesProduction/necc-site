@@ -14,15 +14,16 @@
   var btn = document.getElementById('submit-btn');
   document.getElementById('yr').textContent = new Date().getFullYear();
 
-  // Source: ?src= if present and sane, otherwise the postcard default (direct landing).
-  var srcParam = new URLSearchParams(location.search).get('src') || '';
-  var source = /^[a-z0-9_-]{1,40}$/i.test(srcParam) ? srcParam : 'postcard-2026-10';
-  document.getElementById('src').value = source;
-
   // Card code: the postcard's QR opens /estimate/?c=<code>&src=card. Only the code (random, 8 characters) travels; nothing about
   // the home is on this page or in the request. Anything that doesn't look like a code is dropped, never echoed into the page.
   var cParam = new URLSearchParams(location.search).get('c') || '';
   var cardCode = /^[A-Za-z0-9-]{4,16}$/.test(cParam) ? cParam.toUpperCase() : '';
+
+  // Source: an explicit ?src= (sane) always wins, e.g. src=card, src=website, or the old QR's src=postcard-2026-10.
+  // With no usable src, a valid card code means the visitor typed the printed link ("card"); otherwise it's a direct visit.
+  var srcParam = new URLSearchParams(location.search).get('src') || '';
+  var source = /^[a-z0-9_-]{1,40}$/i.test(srcParam) ? srcParam : (cardCode ? 'card' : 'direct');
+  document.getElementById('src').value = source;
 
   // ---- Web-app URL -------------------------------------------------------
   function endpoint() {
